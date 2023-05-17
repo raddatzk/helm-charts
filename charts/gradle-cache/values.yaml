@@ -89,7 +89,7 @@ ingress:
       hosts:
         - ha-5a.user-management.dev.eu.vwg.vwautocloud.net
   # ingress.ingressClassName -- ingress name of the IngressClass cluster resource
-  ingressClassName: ""
+  ingressClassName: "nginx"
 
 # resources -- custom resource configuration
 resources: {}
