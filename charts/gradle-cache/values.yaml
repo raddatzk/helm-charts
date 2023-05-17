@@ -76,6 +76,7 @@ ingress:
   # ingress.annotations -- ingress annotations
   annotations:
     nginx.ingress.kubernetes.io/service-upstream: 'true'
+    nginx.ingress.kubernetes.io/use-regex: true
     nginx.ingress.kubernetes.io/upstream-vhost: gradle-cache.dev-user-management.svc.cluster.local
     # kubernetes.io/ingress.class: gradle-cache
     # kubernetes.io/tls-acme: "true"
