@@ -72,20 +72,22 @@ service:
 
 ingress:
   # ingress.enabled -- enables Ingress for gradle-cache
-  enabled: false
+  enabled: true
   # ingress.annotations -- ingress annotations
-  annotations: {}
+  annotations:
+    nginx.ingress.kubernetes.io/service-upstream: 'true'
+    nginx.ingress.kubernetes.io/upstream-vhost: gradle-cache.dev-user-management.svc.cluster.local
     # kubernetes.io/ingress.class: gradle-cache
     # kubernetes.io/tls-acme: "true"
   # ingress.hosts -- ingress accepted hostnames
-  hosts: []
-  #  - host: chart-example.local
-  #    paths: []
+  hosts:
+    - host: ha-5a.user-management.dev.eu.vwg.vwautocloud.net
+      paths: [/cache]
   # ingress.tls -- ingress TLS configuration
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+    - secretName: cert-ha
+      hosts:
+        - ha-5a.user-management.dev.eu.vwg.vwautocloud.net
   # ingress.ingressClassName -- ingress name of the IngressClass cluster resource
   ingressClassName: ""
 
