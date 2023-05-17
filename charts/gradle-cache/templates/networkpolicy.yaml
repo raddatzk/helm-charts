@@ -1,65 +1,21 @@
-{{- if .Values.networkPolicy.enabled }}
-{{ $svcPorts :=  required "Values.service.ports is a required value" .Values.service.ports }}
-{{ $ingressControllerName := (include "ingressController.name" .) }}
-{{ $ingressControllerNamespace := (include "ingressController.namespace" .) }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ include "app.fullname" . }}-network-policy
+  name: {{ include "gradle-cache.fullname" . }}-network-policy
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "app.name" . }}
+      app.kubernetes.io/name: {{ include "gradle-cache.name" . }}
   policyTypes:
     - Ingress
-    - Egress
-  {{- if or .Values.networkPolicy.ingressAllowAllHaServices .Values.networkPolicy.ingressAllowedServices .Values.ingress.enabled .Values.networkPolicy.ingressAllowIngressController }}
   ingress:
-    {{- range .Values.networkPolicy.ingressAllowedServices }}
-    - from:
-      {{- if .namespace }}
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/metadata.name: {{ .namespace }}
-      {{- end }}
-      - podSelector:
-          matchLabels:
-            app.kubernetes.io/name: {{ .name }}
-      ports:
-        {{- range $svcPorts }}
-        - protocol: {{ .protocol }}
-          port: {{ .port }}
-        {{- end }}
-    {{- end }}
-    {{- if or .Values.ingress.enabled .Values.networkPolicy.ingressAllowIngressController }}
     - from:
       - namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: {{ $ingressControllerNamespace }}
+            kubernetes.io/metadata.name: ingress-controller
       - podSelector:
           matchLabels:
-            app.kubernetes.io/name: {{ $ingressControllerName }}
+            app.kubernetes.io/name: nginx
       ports:
-        {{- range $svcPorts }}
-        - protocol: {{ .protocol }}
-          port: {{ .port }}
-        {{- end }}
-    {{- end }}
-    {{- if .Values.networkPolicy.ingressAllowAllHaServices }}
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              ha/environmentType: default
-        - podSelector:
-            matchLabels:
-              ha/podType: ha-service
-      ports:
-        {{- range $svcPorts }}
-        - protocol: {{ .protocol }}
-          port: {{ .port }}
-        {{- end }}
-    {{- end }}
-  {{- end }}
-  egress:
-    - {}
-{{- end }}
+        - protocol: TCP
+          port: 5071

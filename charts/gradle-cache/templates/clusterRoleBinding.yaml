@@ -1,16 +1,12 @@
-{{ $clusterRoleBindingIsEnabled := required ".Values.grantKubernetesApiReadAccess is a required value" .Values.grantKubernetesApiReadAccess }}
-
-{{- if $clusterRoleBindingIsEnabled -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ .Release.Namespace }}-{{ include "app.fullname" . }}-view
+  name: {{ .Release.Namespace }}-{{ include "gradle-cache.fullname" . }}-view
 subjects:
   - kind: ServiceAccount
-    name: {{ include "app.fullname" . }}
+    name: {{ include "gradle-cache.fullname" . }}
     namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: view
-{{- end }}
