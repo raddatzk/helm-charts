@@ -16,8 +16,9 @@ spec:
             kubernetes.io/metadata.name: ingress-controller
       - podSelector:
           matchLabels:
-            app.kubernetes.io/name: nginx
+            app.kubernetes.io/name: ingress-nginx
       ports:
         - protocol: TCP
           port: 5071
-  egress: []
+  egress:
+    - { }
